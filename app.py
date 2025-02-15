@@ -1,55 +1,51 @@
 import streamlit as st
-from transformers import pipeline
 import nltk
+from transformers import pipeline
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 
 # Download necessary NLTK data
-nltk.download("punkt")
-nltk.download("stopwords")
+nltk.download('punkt')
+nltk.download('stopwords')
 
 # Load a pre-trained Hugging Face model
-chatbot = pipeline("question-answering", model="deepset/bert-base-cased-squad2")
+chatbot = pipeline("text-generation", model="distilgpt2")
 
-# Preprocess user input
-def preprocess_input(user_input):
-    stop_words = set(stopwords.words("english"))
-    words = word_tokenize(user_input)
-    filtered_words = [word for word in words if word.lower() not in stop_words]
-    return " ".join(filtered_words)
-
-# Define healthcare-specific response logic
-def healthcare_chatbot(user_input):
-    user_input = preprocess_input(user_input).lower()
-    
-    if "sneeze" in user_input or "sneezing" in user_input:
-        return "Frequent sneezing may indicate allergies or a cold. Consult a doctor if symptoms persist."
-    elif "symptom" in user_input:
-        return "It seems like you're experiencing symptoms. Please consult a doctor for accurate advice."
+# Define healthcare-specific response logic (or use a model to generate responses)
+def healthcare_chatbot (user_input):
+     # Simple rule-based keywords to respond
+    if "symptom" in user_input:
+        return "Please consult Doctor for accurate advice"
     elif "appointment" in user_input:
-        return "Would you like me to schedule an appointment with a doctor?"
+        return "Would you like to schedule appointment with the Doctor?"
     elif "medication" in user_input:
-        return "It's important to take your prescribed medications regularly. If you have concerns, consult your doctor."
+        return "It's important to take prescribed medicines regularly. If you have concerns, consult your doctor."
     else:
-        context = """
-        Common healthcare-related scenarios include symptoms of colds, flu, and allergies,
-        along with medication guidance and appointment scheduling.
-        """
-        response = chatbot(question=user_input, context=context)
-        return response["answer"]
+        # For other inputs, use the Hugging Face model to generate a response
+        response = chatbot(user_input, max_length = 500, num_return_sequences=1)
+        # Specifies the maximum length of the generated text response, including the input and the generated tokens.
+        # If set to 3, the model generates three different possible responses based on the input.
+        return response [0] ['generated_text']
+
 
 # Streamlit web app interface
 def main():
-    st.title("Healthcare Assistant Chatbot")
-    user_input = st.text_input("How can I assist you today?", "")
+    # Set up the web app title and input area
+    st.title("Healthcare Assistant chatbot")
 
+    # Display a simple text input for user queries
+    user_input = st.text_input("How can I assist you today?")
+
+    # Display chatbot response
     if st.button("Submit"):
         if user_input:
-            st.write("User:", user_input)
-            response = healthcare_chatbot(user_input)
-            st.write("Healthcare Assistant:", response)
+            st.write("User: ",user_input)
+            with st.spinner("Processing your query, Please wait ...."):
+                response=healthcare_chatbot(user_input)
+            st.write("healthcare Assistant: ",response)
+            print(response) 
         else:
-            st.write("Please enter a query.")
+            st.write("Please enter a message to get a response.")
 
-if __name__ == "__main__":
-    main()
+main() 
+
