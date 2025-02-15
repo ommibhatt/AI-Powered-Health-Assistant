@@ -3,7 +3,7 @@
 An AI-powered chatbot using Streamlit and a pre-trained Hugging Face model for healthcare queries.
 
 ## 🚀 Live Demo
-[Try it here](https://ai-powered-health-assistant-8ajxxepdev3knm9ywbvj3c.streamlit.app/)
+[Try it here](https://ai-powered-health-assistant-4okpixfcqvnazwah3ak3sk.streamlit.app/)
 
 ## 🔹 Features
 - Provides automated healthcare responses
