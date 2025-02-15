@@ -9,8 +9,7 @@ nltk.download("punkt")
 nltk.download("stopwords")
 
 # Load a pre-trained Hugging Face model
-chatbot = pipeline("text-generation", model="distilgpt2")
-# chatbot = pipeline("question-answering", model="deepset/bert-base-cased-squad2")
+chatbot = pipeline("question-answering", model="deepset/bert-base-cased-squad2")
 
 # Preprocess user input
 def preprocess_input(user_input):
